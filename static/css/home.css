@@ -1,0 +1,28 @@
+body,
+html {
+    height: 100%;
+    margin: 0;
+}
+
+.form-text{
+    font-size:18px;
+    color:red;
+    font-weight: bolder;
+}
+
+.leftbar{
+    margin-left:50px;
+}
+
+.form-section{
+    width: 90%;
+    padding:15px;
+    border: 2px solid #ccc;
+    background-color: #f9f9f9;
+    }
+
+    .table-section{
+        margin-top:85px;
+        border-radius: 8px;
+    
+      }    

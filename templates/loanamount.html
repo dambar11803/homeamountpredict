@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <title>Loan Predictor</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --ink:      #0f0e0c;
+            --paper:    #f5f2ec;
+            --cream:    #ede9df;
+            --gold:     #b8860b;
+            --gold-lt:  #d4a843;
+            --rust:     #c0392b;
+            --muted:    #7a7060;
+            --border:   #d6cfc0;
+            --card-bg:  #ffffff;
+            --shadow:   0 4px 32px rgba(15,14,12,.08);
+            --radius:   14px;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--paper);
+            background-image:
+                radial-gradient(circle at 15% 85%, rgba(184,134,11,.06) 0%, transparent 55%),
+                radial-gradient(circle at 85% 10%, rgba(192,57,43,.05) 0%, transparent 50%);
+            min-height: 100vh;
+            color: var(--ink);
+        }
+
+        /* ── Header ── */
+        .site-header {
+            background: var(--ink);
+            padding: 1.1rem 2.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 3px solid var(--gold);
+        }
+        .site-header .logo-mark {
+            width: 36px; height: 36px;
+            background: var(--gold);
+            border-radius: 8px;
+            display: grid; place-items: center;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem; font-weight: 700;
+            color: var(--ink);
+            flex-shrink: 0;
+        }
+        .site-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.15rem;
+            font-weight: 500;
+            color: #fff;
+            letter-spacing: .02em;
+        }
+        .site-header h1 span { color: var(--gold-lt); }
+
+        /* ── Page wrapper ── */
+        .page-wrap {
+            max-width: 1160px;
+            margin: 0 auto;
+            padding: 3rem 2rem 4rem;
+        }
+
+        .section-eyebrow {
+            font-size: .72rem;
+            font-weight: 500;
+            letter-spacing: .15em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: .4rem;
+        }
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--ink);
+            line-height: 1.2;
+            margin-bottom: .5rem;
+        }
+        .section-sub {
+            color: var(--muted);
+            font-size: .9rem;
+            margin-bottom: 2.5rem;
+        }
+
+        /* ── Two-column grid ── */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 420px;
+            gap: 2rem;
+            align-items: start;
+        }
+        @media (max-width: 900px) {
+            .main-grid { grid-template-columns: 1fr; }
+        }
+
+        /* ── Card ── */
+        .card-panel {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.6rem 1.6rem;
+        }
+        .card-panel-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            padding-bottom: .7rem;
+            border-bottom: 1px solid var(--border);
+            color: var(--ink);
+        }
+
+        /* ── Form fields ── */
+        .form-section label,
+        .form-section .form-label {
+            font-size: .7rem;
+            font-weight: 500;
+            letter-spacing: .04em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: .25rem;
+        }
+        .form-section .form-control,
+        .form-section .form-select {
+            border: 1.5px solid var(--border);
+            border-radius: 7px;
+            padding: .42rem .75rem;
+            font-size: .8rem;
+            background: var(--cream);
+            color: var(--ink);
+            transition: border-color .2s, box-shadow .2s;
+        }
+        .form-section .form-control:focus,
+        .form-section .form-select:focus {
+            border-color: var(--gold);
+            box-shadow: 0 0 0 3px rgba(184,134,11,.12);
+            background: #fff;
+            outline: none;
+        }
+        .form-section .mb-3 { margin-bottom: .75rem !important; }
+
+        /* submit button */
+        .btn-predict {
+            width: 100%;
+            padding: .6rem;
+            border: none;
+            border-radius: 8px;
+            background: var(--ink);
+            color: #fff;
+            font-family: 'DM Sans', sans-serif;
+            font-size: .82rem;
+            font-weight: 500;
+            letter-spacing: .04em;
+            margin-top: .4rem;
+            cursor: pointer;
+            transition: background .2s, transform .15s;
+            position: relative;
+            overflow: hidden;
+        }
+        .btn-predict::after {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
+            transform: translateX(-100%);
+            transition: transform .45s;
+        }
+        .btn-predict:hover { background: var(--gold); transform: translateY(-1px); }
+        .btn-predict:hover::after { transform: translateX(100%); }
+        .btn-predict:active { transform: translateY(0); }
+
+        /* ── Errors ── */
+        .error-banner {
+            background: #fff1f0;
+            border: 1px solid #f5c6c2;
+            border-left: 4px solid var(--rust);
+            border-radius: 8px;
+            padding: .85rem 1.1rem;
+            margin-bottom: 1.6rem;
+            font-size: .88rem;
+            color: var(--rust);
+        }
+        .error-banner p { margin: 0; }
+
+        /* ── Results panel ── */
+        .results-panel {
+            position: sticky;
+            top: 2rem;
+        }
+
+        .result-empty {
+            text-align: center;
+            padding: 2.5rem 1rem;
+            color: var(--muted);
+        }
+        .result-empty .empty-icon {
+            font-size: 2.5rem;
+            margin-bottom: .8rem;
+            opacity: .35;
+        }
+        .result-empty p { font-size: .88rem; line-height: 1.6; }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: .5rem 0;
+            border-bottom: 1px dashed var(--border);
+            font-size: .82rem;
+        }
+        .metric-row:last-of-type { border-bottom: none; }
+        .metric-label { color: var(--muted); font-size: .73rem; font-weight: 500; letter-spacing: .03em; text-transform: uppercase; }
+        .metric-value { font-weight: 500; color: var(--ink); }
+
+        .result-hero {
+            background: var(--ink);
+            border-radius: 10px;
+            padding: 1.1rem 1rem;
+            margin-top: 1rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .result-hero::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg, rgba(184,134,11,.18) 0%, transparent 60%);
+        }
+        .result-hero-label {
+            font-size: .65rem;
+            font-weight: 500;
+            letter-spacing: .14em;
+            text-transform: uppercase;
+            color: var(--gold-lt);
+            margin-bottom: .3rem;
+        }
+        .result-hero-amount {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.7rem;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.15;
+        }
+        .result-hero-amount small { font-size: .85rem; font-weight: 400; color: var(--gold-lt); margin-right: .2rem; }
+
+        /* ── Section separator within results ── */
+        .results-section-title {
+            font-size: .65rem;
+            font-weight: 600;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin: 1rem 0 .4rem;
+        }
+
+        /* ── Profile chip row ── */
+        .profile-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: .35rem;
+            margin-bottom: .4rem;
+        }
+        .chip {
+            display: inline-flex;
+            align-items: center;
+            gap: .25rem;
+            background: var(--cream);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: .18rem .6rem;
+            font-size: .72rem;
+            color: var(--ink);
+            font-weight: 500;
+        }
+        .chip-icon { font-size: .7rem; opacity: .7; }
+
+        /* ── Divider badge ── */
+        .step-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .5rem;
+            background: var(--cream);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: .2rem .65rem;
+            font-size: .68rem;
+            font-weight: 500;
+            color: var(--muted);
+            margin-bottom: 1rem;
+        }
+        .step-badge::before {
+            content: '';
+            width: 6px; height: 6px;
+            border-radius: 50%;
+            background: var(--gold);
+        }
+
+        /* fade-up animation */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(18px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .card-panel { animation: fadeUp .45s ease both; }
+        .card-panel:nth-child(2) { animation-delay: .1s; }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="logo-mark">L</div>
+        <h1>Loan<span>Predictor</span> &mdash; Eligibility & Amount Estimator</h1>
+    </header>
+
+    <div class="page-wrap">
+        <p class="section-eyebrow">AI-Powered Estimation</p>
+        <h2 class="section-title">Loan Amount Prediction</h2>
+        <p class="section-sub">Fill in your financial details to get an instant loan eligibility estimate.</p>
+
+        <!-- Global errors -->
+        {% if form.non_field_errors %}
+        <div class="error-banner">
+            {% for error in form.non_field_errors %}
+                <p>{{ error }}</p>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <div class="main-grid">
+
+            <!-- Form card -->
+            <div class="card-panel form-section">
+                <p class="card-panel-title">Your Financial Profile</p>
+                <div class="step-badge">Step 1 — Enter Details</div>
+
+                {% load crispy_forms_tags %}
+                <form method="post">
+                    {% csrf_token %}
+                    {% crispy form %}
+                    <button type="submit" class="btn-predict">Calculate Loan Eligibility →</button>
+                </form>
+            </div>
+
+            <!-- Results card -->
+            <div class="card-panel results-panel">
+                <p class="card-panel-title">Prediction Results</p>
+                <div class="step-badge">Step 2 — View Estimate</div>
+
+                {% if client %}
+                    <!-- Applicant profile chips -->
+                    <p class="results-section-title">Applicant</p>
+                    <div class="profile-chips">
+                        <span class="chip"><span class="chip-icon">👤</span>{{ client.name }}</span>
+                        <span class="chip"><span class="chip-icon">🎂</span>Age {{ client.age }}</span>
+                        <span class="chip"><span class="chip-icon">{% if client.gender == 'M' %}♂{% else %}♀{% endif %}</span>{{ client.gender }}</span>
+                        <span class="chip"><span class="chip-icon">💍</span>{{ client.marital }}</span>
+                    </div>
+
+                    <!-- Financial metrics -->
+                    <p class="results-section-title">Financials</p>
+                    <div class="metric-row">
+                        <span class="metric-label">Monthly Income</span>
+                        <span class="metric-value">Rs. {{ client.monthlyincome }}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Home Value</span>
+                        <span class="metric-value">Rs. {{ client.homevalue }}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Max EMI</span>
+                        <span class="metric-value">Rs. {{ client.maxemi }}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Eligible Loan (70%)</span>
+                        <span class="metric-value">Rs. {{ client.eloanamount }}</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Max Loan Amount</span>
+                        <span class="metric-value">Rs. {{ client.maxloanamount }}</span>
+                    </div>
+
+                    <!-- Loan terms -->
+                    <p class="results-section-title">Loan Terms</p>
+                    <div class="metric-row">
+                        <span class="metric-label">Tenure</span>
+                        <span class="metric-value">{{ client.tenure }} Months</span>
+                    </div>
+                    <div class="metric-row">
+                        <span class="metric-label">Interest Rate</span>
+                        <span class="metric-value">{{ client.interest }}%</span>
+                    </div>
+
+                    <!-- Hero result -->
+                    <div class="result-hero">
+                        <p class="result-hero-label">Predicted Loan Amount</p>
+                        <p class="result-hero-amount"><small>Rs.</small>{{ client.result }}</p>
+                    </div>
+
+                {% else %}
+                    <div class="result-empty">
+                        <div class="empty-icon">📊</div>
+                        <p>Your prediction results will appear here once you submit the form.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
